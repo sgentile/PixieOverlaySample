@@ -56,7 +56,6 @@
                 
                 L.DomUtil.removeClass(legend, 'hide');
                 legendContent.innerHTML = markers.length + ' records';
-                var project;
                 var markerSprites = [];
 				var pixiLayer = (function() {
 					var firstDraw = true;
@@ -77,9 +76,9 @@
 						}
 						var container = utils.getContainer();
 						var renderer = utils.getRenderer();
-						project = utils.latLngToLayerPoint;
+						var project = utils.latLngToLayerPoint;
 						var scale = utils.getScale();
-						var invScale = 1 / scale;
+						var invScale = .5 / scale;
 						if (firstDraw) {
 							prevZoom = zoom;
 							markers.forEach(function(marker) {
