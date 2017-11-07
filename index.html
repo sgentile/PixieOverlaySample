@@ -89,9 +89,9 @@
                             var renderer = utils.getRenderer();
                             var project = utils.latLngToLayerPoint;
                             var scale = utils.getScale();
-                            var invScale = .8 / scale;
+                            var invScale = 1 / scale;
                             var minScale = 48;
-                            var maxScale = 2048;
+                            var maxScale = 512;
                             if (firstDraw) {
                                 prevZoom = zoom;
                                 markers.forEach(function (marker) {
