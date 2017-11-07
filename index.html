@@ -26,11 +26,20 @@
     <script>	
 
         var loader = new PIXI.loaders.Loader();
-        loader.add('marker', 'red-marker.png');
+        loader.add('redmarker', 'red-marker.png');
+        loader.add('bluemarker', 'blue-marker.png');
+        loader.add('yellowmarker', 'yellow-marker.png');
+        loader.add('yellowcirclemarker', 'yellow-circle-marker.png');
+        loader.add('redcirclemarker', 'red-circle-marker.png');
         document.addEventListener("DOMContentLoaded", function () {
             loader.load(function (loader, resources) {
-                var textures = [resources.marker.texture];
-                var focusTextures = [resources.marker.texture];
+                var textures = [
+                    resources.bluemarker.texture, 
+                    resources.yellowmarker.texture, 
+                    resources.redmarker.texture, 
+                    resources.yellowcirclemarker.texture,
+                    resources.redcirclemarker.texture
+                ];
 
                 var legend = document.querySelector('div.legend.geometry');
                 var legendContent = legend.querySelector('.content');
@@ -81,6 +90,8 @@
                             var project = utils.latLngToLayerPoint;
                             var scale = utils.getScale();
                             var invScale = .5 / scale;
+                            var minScale = 64;
+                            var maxScale = 2048;
                             if (firstDraw) {
                                 prevZoom = zoom;
                                 markers.forEach(function (marker) {
@@ -108,8 +119,15 @@
                             if (firstDraw || prevZoom !== zoom) {
                                 markerSprites.forEach(function (markerSprite) {
                                     if (firstDraw) {
+                                        if(invScale < minScale){
+                                            invScale = minScale;
+                                        }
+                                        else if(invScale > maxScale){
+                                            invScale = maxScale;
+                                        } 
                                         markerSprite.scale.set(invScale);
-                                    } else {
+                                    } 
+                                    else {
                                         markerSprite.currentScale = markerSprite.scale.x;
                                         markerSprite.targetScale = invScale;
                                     }
@@ -126,9 +144,18 @@
                                 var lambda = progress / delta;
                                 if (lambda > 1) lambda = 1;
                                 lambda = lambda * (0.4 + lambda * (2.2 + lambda * -1.6));
+                                let val;
                                 markerSprites.forEach(function (markerSprite) {
-                                    markerSprite.scale.set(markerSprite.currentScale + lambda * (markerSprite.targetScale - markerSprite.currentScale));
+                                    val = markerSprite.currentScale + lambda * (markerSprite.targetScale - markerSprite.currentScale);                                    
+                                    if(val < minScale){
+                                        val = minScale;
+                                    }
+                                    else if(val > maxScale){
+                                        val = maxScale;
+                                    } 
+                                    markerSprite.scale.set(val);
                                 });
+                                console.log('scale', val);
                                 renderer.render(container);
                                 if (progress < delta) {
                                     frame = requestAnimationFrame(animate);
